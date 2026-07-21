@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#514d91" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="CamLog" />
+    <title>CamLog — Rapports caméra</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <link rel="apple-touch-icon" href="icon.svg" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <header class="topbar"><button id="goHome" class="brand"><span class="brand-mark">C</span> CAMLOG</button><div class="top-actions"><span id="saveStatus" class="save-status">Sauvegardé localement</span></div></header>
+    <main>
+      <section id="homeView" class="library-view">
+        <div class="library-heading"><div><p class="eyebrow">BIBLIOTHÈQUE</p><h1>Mes projets</h1></div><button class="button primary add-project-trigger">+ Ajouter un projet</button></div>
+        <div id="projectList" class="project-list"></div>
+        <div id="emptyProjects" class="empty-projects"><span class="large-mark">+</span><h2>Créer le premier projet</h2><p>Retrouve ici chaque production et l’ensemble de ses rapports caméra.</p><button class="button primary add-project-trigger">Ajouter un projet</button></div>
+      </section>
+
+      <section id="projectView" hidden>
+        <div class="project-bar"><button id="backToProjects" class="back-button">← Projets</button><div><p class="eyebrow">PROJET OUVERT</p><h1 id="projectTitle">Nouveau projet</h1></div><div class="project-actions"><button id="exportCsv" class="button secondary">CSV · carte active</button><button id="printReport" class="button secondary">PDF · carte active</button><button id="openPdfExport" class="button primary">Exporter PDF</button></div></div>
+        <nav class="project-nav"><button data-section="days" class="nav-tab">Journées de tournage</button><button data-section="info" class="nav-tab">Informations projet</button></nav>
+
+        <section id="infoSection" class="production-card" hidden>
+          <div class="section-heading"><span>01</span><h2>Informations de production</h2></div>
+          <div class="field-grid"><label>Production<input data-project="production" placeholder="Nom de la production" /></label><label>Projet / épisode<input data-project="project" placeholder="Titre du projet" /></label><label>Réalisateur·rice<input data-project="director" placeholder="Nom" /></label><label>Chef opérateur<input data-project="dop" placeholder="Nom" /></label><label>1er assistant caméra<input data-project="ac" placeholder="Nom" /></label></div>
+          <div class="camera-setup"><div class="setup-label">Configuration caméra</div><label>Caméra / modèle<input data-project="cameraName" placeholder="Ex. ARRI ALEXA 35" /></label><label>Support / média<input data-project="mediaType" placeholder="Ex. Codex Compact Drive" /></label></div>
+          <button data-section="days" class="button primary info-to-reports">Voir les journées de tournage →</button>
+        </section>
+
+        <section id="daysSection" class="days-view" hidden><div class="days-heading"><div><p class="eyebrow">JOURNÉES DE TOURNAGE</p><h2>Rapports par date</h2></div><button id="addDay" class="button primary">+ Ajouter une journée</button></div><div id="dayList" class="day-list"></div><div id="emptyDays" class="empty-projects"><span class="large-mark">+</span><h2>Ajouter une journée</h2><p>Les cartes caméra seront rangées dans leur journée de tournage.</p><button class="button primary add-day-trigger">Ajouter une journée</button></div></section>
+        <section id="reportsSection" class="workspace" hidden>
+          <div class="day-report-head"><button id="backToDays" class="back-button">← Journées de tournage</button><div class="day-fields"><label>Date de tournage<input id="shootDate" type="date" /></label><label>Jour de tournage<input id="shootDay" placeholder="Ex. J05" /></label></div></div>
+          <aside class="reports-panel"><div class="section-heading"><span>02</span><h2>Cartes caméra</h2></div><p class="side-copy">Un rapport par carte mémoire.</p><div id="reportList" class="report-list"></div><button id="addReport" class="button add-report">+ Nouvelle carte</button></aside>
+          <section class="log-panel">
+            <div id="emptyReport" class="empty-report"><span class="large-mark">+</span><h2>Créer la première carte</h2><p>Chaque carte possède son propre rapport de prises.</p><button class="button primary add-report-trigger">Créer une carte</button></div>
+            <div id="reportContent" hidden>
+              <div class="report-header"><div class="section-heading"><span>03</span><h2 id="reportTitle">Rapport de carte</h2></div><button id="deleteReport" class="text-button">Supprimer cette carte</button></div>
+              <div class="card-meta"><label>Numéro de carte<input id="cardNumber" placeholder="Ex. A001" /></label><label>Caméra<input id="cameraUnit" placeholder="Ex. Caméra A" /></label></div>
+              <div class="table-wrap"><table><thead><tr><th>N° prise</th><th>Diaph</th><th>Temp. couleur</th><th>Filtres</th><th>LUT</th><th>Focale</th><th>ISO</th><th>FPS</th><th>Résolution</th><th>Codec</th><th>Notes</th><th></th></tr></thead><tbody id="takeRows"></tbody></table></div>
+              <p id="emptyTakes" class="empty-state">Aucune prise notée sur cette carte. Ajoute la première ligne.</p><div class="table-toolbar"><span id="takeCount">0 prise</span><div><button id="duplicateLast" class="button secondary">Dupliquer la dernière</button><button id="addTake" class="button primary">+ Ajouter une prise</button></div></div><div class="notes"><label>Notes de carte<textarea id="reportNotes" placeholder="Exposition, incidents, notes pour le DIT ou la postproduction…"></textarea></label></div>
+            </div>
+          </section>
+        </section>
+      </section>
+    </main>
+    <template id="projectItemTemplate"><button class="project-item"><span class="project-initial">C</span><span><strong></strong><small></small></span><b>→</b></button></template>
+    <template id="reportItemTemplate"><button class="report-item"><span class="report-index"></span><strong></strong><small></small></button></template>
+    <template id="takeTemplate"><tr><td class="take-number" data-label="Prise"></td><td data-label="Diaph"><input data-field="aperture" placeholder="T2.8" /></td><td data-label="Temp. couleur"><input data-field="whiteBalance" placeholder="5600K" /></td><td data-label="Filtres"><input data-field="filters" placeholder="ND .6" /></td><td data-label="LUT"><input data-field="lut" placeholder="Show LUT" /></td><td data-label="Focale"><input data-field="focal" placeholder="35 mm" /></td><td data-label="ISO"><input data-field="iso" placeholder="800" /></td><td data-label="FPS"><input data-field="fps" placeholder="25 fps" /></td><td data-label="Résolution"><input data-field="resolution" placeholder="4.6K" /></td><td data-label="Codec"><input data-field="codec" placeholder="ProRes 4444" /></td><td data-label="Notes"><input data-field="notes" placeholder="" /></td><td data-label=""><button class="delete-row" aria-label="Supprimer la prise">×</button></td></tr></template>
+    <dialog id="pdfDialog" class="pdf-dialog"><form method="dialog"><div class="dialog-heading"><div><p class="eyebrow">EXPORT PDF</p><h2>Choisir les cartes</h2></div><button class="close-dialog" value="cancel" aria-label="Fermer">×</button></div><p class="dialog-copy">Les informations de production figureront une seule fois au début du document.</p><label class="check-all"><input id="selectAllReports" type="checkbox" checked /> <span>Tout sélectionner</span></label><div id="pdfReportChoices" class="pdf-report-choices"></div><div class="dialog-actions"><button value="cancel" class="button secondary">Annuler</button><button id="generatePdf" value="default" class="button primary">Ouvrir la version PDF</button></div></form></dialog>
+    <script src="app.js"></script>
+    <script>if ('serviceWorker' in navigator) navigator.serviceWorker.register('service-worker.js');</script>
+  </body>
+</html>
